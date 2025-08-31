@@ -19,7 +19,7 @@
     ]
   },
   "depends": {
-    "fabric-api": "*",
+    "fabric-api": ">=0.133.0",
     "minecraft": "1.21.8"
   }
 }
