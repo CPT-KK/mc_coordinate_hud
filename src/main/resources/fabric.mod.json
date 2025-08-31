@@ -7,7 +7,8 @@
   "authors": ["CptKK"],
   "contact": {
     "homepage": "https://github.com/CPT-KK",
-    "sources": "https://github.com/CPT-KK"
+    "sources": "https://github.com/CPT-KK/mc_coordinate_hud",
+    "issues": "https://github.com/CPT-KK/mc_coordinate_hud/issues"
   },
   "license": "MIT",
   "icon": "assets/coordinate_hud/icon.png",
