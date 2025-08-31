@@ -161,16 +161,18 @@ public class CoordinateHud implements ClientModInitializer {
 
         // 获取世界中的所有实体
         Iterable<Entity> entities = client.world.getEntities();
-        int entityCountInView = 0;
+
+        // 初始化计数器
         int totalEntityCount = 0;
+        int entityCountInView = 0;
 
         // 根据游戏FOV设置获取最大视角范围（弧度）
         // 使用更准确的FOV计算方式，考虑视角的半角
         double maxAngle = Math.toRadians(client.options.getFov().getValue() / 2.0);
 
-        // 遍历所有实体
+        // 遍历所有实体，同时计算总实体数量和视野内实体数量
         for (Entity entity : entities) {
-            // 检查存活且不是玩家的实体是否在玩家视野内
+            // 检查存活且不是玩家的实体
             if (entity.isAlive() && entity != player) {
                 totalEntityCount++;
 
@@ -193,8 +195,8 @@ public class CoordinateHud implements ClientModInitializer {
                 // 计算玩家视角向量与实体方向向量之间的夹角（弧度）
                 double angle = getAngleBetweenVectors(playerViewVector, entityDirection);
 
-                // 如果夹角小于最大视角范围，则认为该实体在玩家视野内
-                if (angle <= maxAngle) {  // 使用<=确保边界情况也能正确处理
+                // 如果夹角小于等于最大视角范围，则认为该实体在玩家视野内
+                if (angle <= maxAngle) {
                     entityCountInView++;
                 }
             }
