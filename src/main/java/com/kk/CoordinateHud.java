@@ -25,12 +25,21 @@ import org.lwjgl.glfw.GLFW;
 public class CoordinateHud implements ClientModInitializer {
     // Minecraft客户端实例
     private static final MinecraftClient client = MinecraftClient.getInstance();
+    
     // 切换HUD显示的按键绑定
     private KeyBinding toggleHudKeyBinding;
+
     // HUD是否可见的标志
     private boolean hudVisible = true;
+
     // HUD元素的唯一标识符
     private static final Identifier HUD_ELEMENT_ID = Identifier.of("coordinate-hud", "main_hud");
+    
+    // HUD常量设置
+    private static final int HUD_COLOR = 0xFFFFFFFF; // 文本颜色，白色不透明
+    private static final int HUD_START_X = 4;        // HUD起始X坐标
+    private static final int HUD_START_Y = 4;        // HUD起始Y坐标
+    private static final int HUD_LINE_HEIGHT = 10;   // 行高
 
     /**
      * 客户端初始化方法
@@ -67,20 +76,14 @@ public class CoordinateHud implements ClientModInitializer {
             return;
         }
 
-        // HUD设置
-        int color = 0xFFFFFFFF; // 文本颜色，白色不透明
-        int startX = 4;         // HUD起始X坐标
-        int startY = 4;         // HUD起始Y坐标
-        int lineHeight = 10;    // 行高
-
         // 获取玩家位置
         Vec3d playerPos = client.player.getPos();
 
         // 获取区块内相对位置
         BlockPos playerBlockPos = client.player.getBlockPos();
-        int blockX = playerBlockPos.getX() % 16;
-        int blockY = playerBlockPos.getY() % 16;
-        int blockZ = playerBlockPos.getZ() % 16;
+        int blockX = Math.floorMod(playerBlockPos.getX(), 16);
+        int blockY = Math.floorMod(playerBlockPos.getY(), 16);
+        int blockZ = Math.floorMod(playerBlockPos.getZ(), 16);
 
         // 获取生物群系名称
         RegistryEntry<Biome> biomeEntry = client.world.getBiome(playerBlockPos);
@@ -139,13 +142,13 @@ public class CoordinateHud implements ClientModInitializer {
         String temperatureText = String.format("%s: %.2f", I18n.translate("coordinate_hud.temperature"), temperature);
 
         // 绘制文本行
-        context.drawText(client.textRenderer, coordsText, startX, startY + 0 * lineHeight, color, true);
-        context.drawText(client.textRenderer, chunkText, startX, startY + 1 * lineHeight, color, true);
-        context.drawText(client.textRenderer, biomeText, startX, startY + 2 * lineHeight, color, true);
-        context.drawText(client.textRenderer, otherCoordsText, startX, startY + 3 * lineHeight, color, true);       
-        context.drawText(client.textRenderer, entitiesText, startX, startY + 4 * lineHeight, color, true);     
-        context.drawText(client.textRenderer, surfaceHeightText, startX, startY + 5 * lineHeight, color, true);
-        context.drawText(client.textRenderer, temperatureText, startX, startY + 6 * lineHeight, color, true);
+        context.drawText(client.textRenderer, coordsText, HUD_START_X, HUD_START_Y + 0 * HUD_LINE_HEIGHT, HUD_COLOR, true);
+        context.drawText(client.textRenderer, chunkText, HUD_START_X, HUD_START_Y + 1 * HUD_LINE_HEIGHT, HUD_COLOR, true);
+        context.drawText(client.textRenderer, biomeText, HUD_START_X, HUD_START_Y + 2 * HUD_LINE_HEIGHT, HUD_COLOR, true);
+        context.drawText(client.textRenderer, otherCoordsText, HUD_START_X, HUD_START_Y + 3 * HUD_LINE_HEIGHT, HUD_COLOR, true);       
+        context.drawText(client.textRenderer, entitiesText, HUD_START_X, HUD_START_Y + 4 * HUD_LINE_HEIGHT, HUD_COLOR, true);     
+        context.drawText(client.textRenderer, surfaceHeightText, HUD_START_X, HUD_START_Y + 5 * HUD_LINE_HEIGHT, HUD_COLOR, true);
+        context.drawText(client.textRenderer, temperatureText, HUD_START_X, HUD_START_Y + 6 * HUD_LINE_HEIGHT, HUD_COLOR, true);
     }
 
     /**
