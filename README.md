@@ -42,7 +42,7 @@ The mod's name and description are also localized for [Mod Menu](https://github.
 
 - **Minecraft**: 1.21.8
 - **Fabric Loader**: 0.15.11 or higher
-- **Fabric API**: 0.100.8+1.21.8 or higher
+- **Fabric API**: 0.133.0+1.21.8 or higher
 
 ## Installation
 
