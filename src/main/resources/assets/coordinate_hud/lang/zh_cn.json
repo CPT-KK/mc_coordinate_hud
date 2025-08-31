@@ -1,0 +1,22 @@
+{
+  "modmenu.nameTranslation.coordinate-hud": "坐标HUD",
+  "modmenu.descriptionTranslation.coordinate-hud": "显示坐标、区块、生物群系、帧率等信息。",
+  "coordinate_hud.coord": "XYZ",
+  "coordinate_hud.yaw": "偏航角",
+  "coordinate_hud.pitch": "俯仰角",
+  "coordinate_hud.direction": "方向",
+  "coordinate_hud.fps": "帧率",
+  "coordinate_hud.chunk_rel_coord": "区块 XYZ",
+  "coordinate_hud.biome": "生物群系",
+  "coordinate_hud.biome.unknown": "未知",
+  "coordinate_hud.nether_coord": "下界 XYZ",
+  "coordinate_hud.overworld_coord": "主世界 XYZ",
+  "coordinate_hud.entities": "实体",
+  "coordinate_hud.surface_height": "地表 Y",
+  "coordinate_hud.temperature": "温度",
+  "coordinate_hud.na": "不可用",
+  "coordinate_hud.direction.south": "南",
+  "coordinate_hud.direction.west": "西",
+  "coordinate_hud.direction.east": "东",
+  "coordinate_hud.direction.north": "北"
+}

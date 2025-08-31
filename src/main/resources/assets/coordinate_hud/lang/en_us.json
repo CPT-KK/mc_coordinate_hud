@@ -1,0 +1,22 @@
+{
+  "modmenu.nameTranslation.coordinate-hud": "Coordinate HUD",
+  "modmenu.descriptionTranslation.coordinate-hud": "Displays information such as coordinates, chunk, biome, FPS, and more.",
+  "coordinate_hud.coord": "XYZ",
+  "coordinate_hud.yaw": "Yaw",
+  "coordinate_hud.pitch": "Pitch",
+  "coordinate_hud.direction": "Direction",
+  "coordinate_hud.fps": "FPS",
+  "coordinate_hud.chunk_rel_coord": "Chunk XYZ",
+  "coordinate_hud.biome": "Biome",
+  "coordinate_hud.biome.unknown": "Unknown",
+  "coordinate_hud.nether_coord": "Nether XYZ",
+  "coordinate_hud.overworld_coord": "Overworld XYZ",
+  "coordinate_hud.entities": "Entities",
+  "coordinate_hud.surface_height": "Surface Y",
+  "coordinate_hud.temperature": "Temperature",
+  "coordinate_hud.na": "N/A",
+  "coordinate_hud.direction.south": "South",
+  "coordinate_hud.direction.west": "West",
+  "coordinate_hud.direction.east": "East",
+  "coordinate_hud.direction.north": "North"
+}

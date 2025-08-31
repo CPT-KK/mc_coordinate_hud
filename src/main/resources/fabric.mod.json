@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "coordinate-hud",
+  "version": "1.0.0",
+  "name": "Coordinate HUD",
+  "description": "Displays information such as coordinates, chunk, biome, FPS, and more.",
+  "authors": ["CptKK"],
+  "contact": {
+    "homepage": "https://github.com/CPT-KK",
+    "sources": "https://github.com/CPT-KK"
+  },
+  "license": "MIT",
+  "icon": "assets/coordinate_hud/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.kk.CoordinateHud"
+    ]
+  },
+  "depends": {
+    "fabric-api": "*",
+    "minecraft": "1.21.8"
+  }
+}
