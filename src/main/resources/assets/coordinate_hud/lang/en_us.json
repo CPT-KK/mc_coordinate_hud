@@ -14,7 +14,7 @@
   "coordinate_hud.entities": "Entities",
   "coordinate_hud.surface_height": "Surface Y",
   "coordinate_hud.temperature": "Temperature",
-  "coordinate_hud.na": "N/A",
+  "coordinate_hud.other_dim_coord.na": "Another dimension XYZ N/A",
   "coordinate_hud.direction.south": "South",
   "coordinate_hud.direction.west": "West",
   "coordinate_hud.direction.east": "East",

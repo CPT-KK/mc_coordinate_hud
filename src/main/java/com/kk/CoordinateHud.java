@@ -112,7 +112,7 @@ public class CoordinateHud implements ClientModInitializer {
             otherDimensionCoords = String.format("%s: %.3f, %.3f, %.3f", I18n.translate("coordinate_hud.overworld_coord"), playerPos.getX() * 8, playerPos.getY(), playerPos.getZ() * 8);
         } else {
             // 其他维度显示不可用
-            otherDimensionCoords = String.format("(%s)", I18n.translate("coordinate_hud.na"));
+            otherDimensionCoords = String.format("(%s)", I18n.translate("coordinate_hud.other_dim_coord.na"));
         }
 
         // 计算视野内的实体数量和世界中的总实体数量
@@ -165,7 +165,8 @@ public class CoordinateHud implements ClientModInitializer {
         int totalEntityCount = 0;
 
         // 根据游戏FOV设置获取最大视角范围（弧度）
-        double maxAngle = Math.toRadians(client.options.getFov().getValue()) / 4.0F;
+        // 使用更准确的FOV计算方式，考虑视角的半角
+        double maxAngle = Math.toRadians(client.options.getFov().getValue() / 2.0);
 
         // 遍历所有实体
         for (Entity entity : entities) {
@@ -173,14 +174,27 @@ public class CoordinateHud implements ClientModInitializer {
             if (entity.isAlive() && entity != player) {
                 totalEntityCount++;
 
+                // 计算从玩家眼睛位置到实体的向量
+                Vec3d playerEyePos = player.getEyePos();
+                Vec3d entityPos = entity.getPos();
+                Vec3d toEntity = entityPos.subtract(playerEyePos);
+
+                // 计算距离以用于近似实体在视野内的判断
+                double distance = toEntity.length();
+                
+                // 如果距离为0，跳过该实体避免除零错误
+                if (distance == 0) {
+                    continue;
+                }
+
                 // 计算从玩家到实体的单位向量
-                Vec3d entityDirection = entity.getPos().subtract(player.getPos()).normalize();
+                Vec3d entityDirection = toEntity.normalize();
 
                 // 计算玩家视角向量与实体方向向量之间的夹角（弧度）
                 double angle = getAngleBetweenVectors(playerViewVector, entityDirection);
 
                 // 如果夹角小于最大视角范围，则认为该实体在玩家视野内
-                if (angle < maxAngle) {
+                if (angle <= maxAngle) {  // 使用<=确保边界情况也能正确处理
                     entityCountInView++;
                 }
             }
@@ -196,14 +210,18 @@ public class CoordinateHud implements ClientModInitializer {
      * @return 玩家视角方向的单位向量
      */
     private static Vec3d getPlayerViewVector(float yaw, float pitch) {
-        // 将角度转换为弧度并计算三角函数值
-        float cosYaw = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
-        float sinYaw = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
-        float cosPitch = MathHelper.cos(-pitch * 0.017453292F);
-        float sinPitch = MathHelper.sin(-pitch * 0.017453292F);
+        // 将角度转换为弧度
+        float yawRad = yaw * 0.017453292F;
+        float pitchRad = pitch * 0.017453292F;
+        
+        // 计算三角函数值
+        float cosYaw = MathHelper.cos(-yawRad);
+        float sinYaw = MathHelper.sin(-yawRad);
+        float cosPitch = MathHelper.cos(-pitchRad);
+        float sinPitch = MathHelper.sin(-pitchRad);
 
-        // 返回玩家视角方向的单位向量
-        return new Vec3d(sinYaw * cosPitch, sinPitch, cosYaw * cosPitch);
+        // 返回玩家视角方向的单位向量 (注意Y轴在Minecraft中是颠倒的)
+        return new Vec3d(sinYaw * cosPitch, -sinPitch, cosYaw * cosPitch);
     }
 
     /**

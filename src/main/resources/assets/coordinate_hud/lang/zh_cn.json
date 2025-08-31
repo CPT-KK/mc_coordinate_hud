@@ -14,7 +14,7 @@
   "coordinate_hud.entities": "实体",
   "coordinate_hud.surface_height": "地表 Y",
   "coordinate_hud.temperature": "温度",
-  "coordinate_hud.na": "不可用",
+  "coordinate_hud.other_dim_coord.na": "另一维度 XYZ 不可用",
   "coordinate_hud.direction.south": "南",
   "coordinate_hud.direction.west": "西",
   "coordinate_hud.direction.east": "东",
