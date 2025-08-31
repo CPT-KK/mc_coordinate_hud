@@ -211,17 +211,19 @@ public class CoordinateHud implements ClientModInitializer {
      */
     private static Vec3d getPlayerViewVector(float yaw, float pitch) {
         // 将角度转换为弧度
-        float yawRad = yaw * 0.017453292F;
-        float pitchRad = pitch * 0.017453292F;
+        float yawRad = (float) Math.toRadians(yaw);
+        float pitchRad = (float) Math.toRadians(pitch);
         
-        // 计算三角函数值
-        float cosYaw = MathHelper.cos(-yawRad);
-        float sinYaw = MathHelper.sin(-yawRad);
-        float cosPitch = MathHelper.cos(-pitchRad);
-        float sinPitch = MathHelper.sin(-pitchRad);
+        // 根据Minecraft坐标系计算方向向量分量
+        // x = -sin(yaw) * cos(pitch)
+        // y = -sin(pitch)
+        // z = cos(yaw) * cos(pitch)
+        double x = -Math.sin(yawRad) * Math.cos(pitchRad);
+        double y = -Math.sin(pitchRad);
+        double z = Math.cos(yawRad) * Math.cos(pitchRad);
 
-        // 返回玩家视角方向的单位向量 (注意Y轴在Minecraft中是颠倒的)
-        return new Vec3d(sinYaw * cosPitch, -sinPitch, cosYaw * cosPitch);
+        // 返回玩家视角方向的单位向量
+        return new Vec3d(x, y, z);
     }
 
     /**
