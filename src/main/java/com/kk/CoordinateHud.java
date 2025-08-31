@@ -10,13 +10,17 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import org.lwjgl.glfw.GLFW;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Properties;
 
 /**
  * Coordinate HUD Mod 主类
@@ -31,6 +35,9 @@ public class CoordinateHud implements ClientModInitializer {
 
     // HUD是否可见的标志
     private boolean hudVisible = true;
+
+    // 配置文件路径
+    private static final String CONFIG_FILE_NAME = "coordinate_hud.properties";
 
     // HUD元素的唯一标识符
     private static final Identifier HUD_ELEMENT_ID = Identifier.of("coordinate-hud", "main_hud");
@@ -47,6 +54,9 @@ public class CoordinateHud implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        // 读取配置文件中的HUD可见性设置
+        loadConfig();
+        
         // 注册切换HUD的按键绑定，默认为F10
         toggleHudKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.coordinate_hud.toggle",
@@ -68,6 +78,8 @@ public class CoordinateHud implements ClientModInitializer {
         if (toggleHudKeyBinding != null) {
             while (toggleHudKeyBinding.wasPressed()) {
                 hudVisible = !hudVisible;
+                // 保存配置到文件
+                saveConfig();
             }
         }
 
@@ -291,5 +303,42 @@ public class CoordinateHud implements ClientModInitializer {
     public static int getSurfaceHeight(net.minecraft.world.World world, int x, int z) {
         // 使用World.getTopY方法获取指定XZ坐标的最高点
         return world.getTopY(net.minecraft.world.Heightmap.Type.MOTION_BLOCKING, x, z);
+    }
+
+    /**
+     * 读取配置文件中的HUD可见性设置
+     */
+    private void loadConfig() {
+        File configDir = new File(MinecraftClient.getInstance().runDirectory, "config");
+        File configFile = new File(configDir, CONFIG_FILE_NAME);
+        if (configFile.exists()) {
+            try (FileReader reader = new FileReader(configFile)) {
+                Properties props = new Properties();
+                props.load(reader);
+                hudVisible = Boolean.parseBoolean(props.getProperty("hudVisible", "true"));
+            } catch (Exception e) {
+                // 如果读取配置失败，使用默认值true
+                hudVisible = true;
+            }
+        }
+        // 如果配置文件不存在，使用默认值true
+    }
+
+    /**
+     * 保存HUD可见性设置到配置文件
+     */
+    private void saveConfig() {
+        File configDir = new File(MinecraftClient.getInstance().runDirectory, "config");
+        if (!configDir.exists()) {
+            configDir.mkdirs(); // 创建config目录（如果不存在）
+        }
+        File configFile = new File(configDir, CONFIG_FILE_NAME);
+        try (FileWriter writer = new FileWriter(configFile)) {
+            Properties props = new Properties();
+            props.setProperty("hudVisible", String.valueOf(hudVisible));
+            props.store(writer, "Coordinate HUD Configuration");
+        } catch (Exception e) {
+            // 静默忽略保存错误
+        }
     }
 }

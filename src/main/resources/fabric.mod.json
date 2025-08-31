@@ -6,7 +6,7 @@
   "description": "Displays information such as coordinates, chunk, biome, FPS, and more.",
   "authors": ["CptKK"],
   "contact": {
-    "homepage": "https://github.com/CPT-KK",
+    "homepage": "https://github.com/CPT-KK/mc_coordinate_hud",
     "sources": "https://github.com/CPT-KK/mc_coordinate_hud",
     "issues": "https://github.com/CPT-KK/mc_coordinate_hud/issues"
   },
