@@ -33,7 +33,7 @@ jobs:
         id: get_version
         run: |
           echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "RELEASE_NAME=HUD Mod v${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "RELEASE_NAME=Coordinate HUD Mod v${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Create Release and Upload Assets
         uses: ncipollo/release-action@v1
