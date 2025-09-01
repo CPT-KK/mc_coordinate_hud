@@ -35,23 +35,12 @@ jobs:
           echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
           echo "RELEASE_NAME=HUD Mod v${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload Assets
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ steps.get_version.outputs.RELEASE_NAME }}
+          tag: ${{ github.ref_name }}
+          name: ${{ steps.get_version.outputs.RELEASE_NAME }}
           draft: false
           prerelease: false
-
-      - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/*.jar
-          asset_name: hud-mod-${{ steps.get_version.outputs.VERSION }}.jar
-          asset_content_type: application/java-archive
+          allowUpdates: true
+          artifacts: "./build/libs/*.jar"
