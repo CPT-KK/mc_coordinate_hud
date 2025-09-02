@@ -4,6 +4,8 @@
 
 一个 Minecraft 的客户端 Fabric 模组，显示一个全面的抬头显示器(HUD)，提供有关玩家及其环境的各种信息。
 
+![截图](screenshot_zh_cn.png)
+
 ## 功能
 
 HUD 实时显示以下信息：

@@ -6,6 +6,8 @@ A client-side Fabric mod for Minecraft that displays a comprehensive Heads-Up Di
 
 [中文](README_zh.md)
 
+![Screenshot](screenshot_en_us.png)
+
 ## Features
 
 The HUD displays the following information in real-time:
