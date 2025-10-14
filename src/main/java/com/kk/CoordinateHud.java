@@ -29,19 +29,20 @@ import java.util.Properties;
 public class CoordinateHud implements ClientModInitializer {
     // Minecraft客户端实例
     private static final MinecraftClient client = MinecraftClient.getInstance();
+
+    // HUD元素的唯一标识符
+    private static final Identifier HUD_ELEMENT_ID = Identifier.of("coordinate-hud", "main");
     
     // 切换HUD显示的按键绑定
     private KeyBinding toggleHudKeyBinding;
+    private KeyBinding.Category helpF10Category = KeyBinding.Category.create(HUD_ELEMENT_ID);
 
     // HUD是否可见的标志
     private boolean hudVisible = true;
 
     // 配置文件路径
     private static final String CONFIG_FILE_NAME = "coordinate_hud.properties";
-
-    // HUD元素的唯一标识符
-    private static final Identifier HUD_ELEMENT_ID = Identifier.of("coordinate-hud", "main_hud");
-    
+   
     // HUD常量设置
     private static final int HUD_COLOR = 0xFFFFFFFF; // 文本颜色，白色不透明
     private static final int HUD_START_X = 4;        // HUD起始X坐标
@@ -61,7 +62,7 @@ public class CoordinateHud implements ClientModInitializer {
         toggleHudKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.coordinate_hud.toggle",
                 GLFW.GLFW_KEY_F10,
-                "category.coordinate_hud"
+                helpF10Category
         ));
 
         // 将HUD渲染方法注册到HUD元素注册表中
@@ -83,13 +84,13 @@ public class CoordinateHud implements ClientModInitializer {
             }
         }
 
-        // 如果HUD不可见，或者玩家/世界对象为空，则不进行渲染
-        if (!hudVisible || client.player == null || client.world == null) {
+        // 如果HUD不可见，或者玩家/世界对象为空，或者Minecraft的F3调试窗口打开，则不进行渲染
+        if (!hudVisible || client.player == null || client.world == null || client.getDebugHud().shouldShowDebugHud()) {
             return;
         }
 
         // 获取玩家位置
-        Vec3d playerPos = client.player.getPos();
+        Vec3d playerPos = client.player.getEntityPos();
 
         // 获取区块内相对位置
         BlockPos playerBlockPos = client.player.getBlockPos();
@@ -142,11 +143,13 @@ public class CoordinateHud implements ClientModInitializer {
         float temperature = client.world.getBiome(playerBlockPos).value().getTemperature();
 
         // 准备要显示的文本行
-        String coordsText = String.format("%s: %.3f, %.3f, %.3f | %s: %.2f %s: %.2f | %s: %s | %s: %d",
+        String coordsText = String.format("%s: %.3f, %.3f, %.3f | %s: %d, %d, %d | %s: %d",
                 I18n.translate("coordinate_hud.coord"), playerPos.getX(), playerPos.getY(), playerPos.getZ(),
+                I18n.translate("coordinate_hud.chunk_rel_coord"), blockX, blockY, blockZ,
+                I18n.translate("coordinate_hud.fps"), fps);
+        String chunkText = String.format("%s: %.2f %s: %.2f | %s: %s", 
                 I18n.translate("coordinate_hud.yaw"), yaw, I18n.translate("coordinate_hud.pitch"), pitch,
-                I18n.translate("coordinate_hud.direction"), direction, I18n.translate("coordinate_hud.fps"), fps);
-        String chunkText = String.format("%s: %d, %d, %d", I18n.translate("coordinate_hud.chunk_rel_coord"), blockX, blockY, blockZ);
+                I18n.translate("coordinate_hud.direction"), direction);
         String biomeText = I18n.translate("coordinate_hud.biome") + ": " + biomeName;
         String otherCoordsText = otherDimensionCoords;
         String entitiesText = String.format("%s: %d/%d", I18n.translate("coordinate_hud.entities"), entityCountInView, totalEntityCount);
@@ -193,7 +196,7 @@ public class CoordinateHud implements ClientModInitializer {
 
                 // 计算从玩家眼睛位置到实体的向量
                 Vec3d playerEyePos = player.getEyePos();
-                Vec3d entityPos = entity.getPos();
+                Vec3d entityPos = entity.getEntityPos();
                 Vec3d toEntity = entityPos.subtract(playerEyePos);
 
                 // 计算距离以用于近似实体在视野内的判断

@@ -2,8 +2,8 @@
   "modmenu.nameTranslation.coordinate-hud": "坐标HUD",
   "modmenu.descriptionTranslation.coordinate-hud": "显示坐标、区块、生物群系、帧率等信息。",
   "coordinate_hud.coord": "XYZ",
-  "coordinate_hud.yaw": "偏航角",
-  "coordinate_hud.pitch": "俯仰角",
+  "coordinate_hud.yaw": "偏航",
+  "coordinate_hud.pitch": "俯仰",
   "coordinate_hud.direction": "方向",
   "coordinate_hud.fps": "帧率",
   "coordinate_hud.chunk_rel_coord": "区块 XYZ",
@@ -18,5 +18,7 @@
   "coordinate_hud.direction.south": "南",
   "coordinate_hud.direction.west": "西",
   "coordinate_hud.direction.east": "东",
-  "coordinate_hud.direction.north": "北"
+  "coordinate_hud.direction.north": "北",
+  "key.coordinate_hud.toggle": "开/关HUD显示",
+  "key.category.coordinate-hud.main": "坐标HUD"
 }

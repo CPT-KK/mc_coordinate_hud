@@ -18,5 +18,7 @@
   "coordinate_hud.direction.south": "South",
   "coordinate_hud.direction.west": "West",
   "coordinate_hud.direction.east": "East",
-  "coordinate_hud.direction.north": "North"
+  "coordinate_hud.direction.north": "North",
+  "key.coordinate_hud.toggle": "Toggle HUD Display",
+  "key.category.coordinate-hud.main": "Coordinate HUD"
 }
