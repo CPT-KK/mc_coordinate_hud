@@ -1,6 +1,6 @@
 # 坐标 HUD 模组
 
-![模组版本](https://img.shields.io/badge/version-1.0.0-blue) ![Minecraft 版本](https://img.shields.io/badge/minecraft-1.21.8-brightgreen) ![环境](https://img.shields.io/badge/environment-client-orange)
+![模组版本](https://img.shields.io/badge/version-1.6.0-blue) ![Minecraft 版本](https://img.shields.io/badge/minecraft-26.3-brightgreen) ![环境](https://img.shields.io/badge/environment-client-orange)
 
 一个 Minecraft 的客户端 Fabric 模组，显示一个全面的抬头显示器(HUD)，提供有关玩家及其环境的各种信息。
 
@@ -42,13 +42,13 @@ HUD 实时显示以下信息：
 
 ## 要求
 
-- **Minecraft**：1.21.8
-- **Fabric Loader**：0.15.11 或更高版本
-- **Fabric API**：0.133.0+1.21.8 或更高版本
+- **Minecraft**：26.3
+- **Fabric Loader**：0.19.5 或更高版本
+- **Fabric API**：0.161.0+26.3 或更高版本
 
 ## 安装
 
-1. 为 Minecraft 1.21.8 下载并安装 [Fabric Loader](https://fabricmc.net/use/)。
+1. 为 Minecraft 26.3 下载并安装 [Fabric Loader](https://fabricmc.net/use/)。
 2. 下载 [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) 模组 jar 文件。
 3. 从 [Releases](https://github.com/CPT-KK/mc-coordinate-hud/releases) 页面下载最新的 `coordinate-hud-<version>.jar` 文件。
 4. 将下载的 `fabric-api-<version>.jar` 和 `coordinate-hud-<version>.jar` 文件放入你的 `.minecraft/mods` 文件夹。
@@ -60,7 +60,7 @@ HUD 实时显示以下信息：
 
 ### 先决条件
 
-- Java 开发工具包 (JDK) 21 或更高版本。
+- Java 开发工具包 (JDK) 25 或更高版本。
 
 ### 步骤
 

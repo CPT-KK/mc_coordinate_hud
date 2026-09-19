@@ -1,5 +1,6 @@
 package com.kk;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.io.FileReader;
@@ -64,7 +65,7 @@ public class CoordinateHud implements ClientModInitializer {
         // 注册切换HUD的按键绑定，默认为F10
         toggleHudKeyMapping = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.coordinate_hud.toggle",
-                GLFW.GLFW_KEY_F10,
+                InputConstants.KEY_F10,
                 helpF10Category
         ));
 
@@ -105,7 +106,7 @@ public class CoordinateHud implements ClientModInitializer {
         Holder<Biome> biomeEntry = minecraft.level.getBiome(playerBlockPos);
         String biomeName = biomeEntry.unwrapKey()
                 .map(key -> "biome." + key.identifier().getNamespace() + "." + key.identifier().getPath())
-                .filter(I18n::exists)
+                .filter(Language.getInstance()::has)
                 .map(I18n::get)
                 .filter(s -> !s.isEmpty())
                 .orElse(I18n.get("coordinate_hud.biome.unknown"));
