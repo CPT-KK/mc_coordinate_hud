@@ -1,6 +1,6 @@
 # Coordinate HUD Mod
 
-![Mod Version](https://img.shields.io/badge/version-1.0.0-blue) ![Minecraft Version](https://img.shields.io/badge/minecraft-1.21.8-brightgreen) ![Environment](https://img.shields.io/badge/environment-client-orange)
+![Mod Version](https://img.shields.io/badge/version-1.5.1-blue) ![Minecraft Version](https://img.shields.io/badge/minecraft-26.2-brightgreen) ![Environment](https://img.shields.io/badge/environment-client-orange)
 
 A client-side Fabric mod for Minecraft that displays a comprehensive Heads-Up Display (HUD) with various pieces of information about the player and their environment.
 
@@ -44,13 +44,13 @@ The mod's name and description are also localized for [Mod Menu](https://github.
 
 ## Requirements
 
-- **Minecraft**: 1.21.8
-- **Fabric Loader**: 0.15.11 or higher
-- **Fabric API**: 0.133.0+1.21.8 or higher
+- **Minecraft**: 26.2
+- **Fabric Loader**: 0.19.5 or higher
+- **Fabric API**: 0.161.0+26.2 or higher
 
 ## Installation
 
-1. Download and install the [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21.8.
+1. Download and install the [Fabric Loader](https://fabricmc.net/use/) for Minecraft 26.2.
 2. Download the [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) mod jar file.
 3. Download the latest `coordinate-hud-<version>.jar` file from the [Releases](https://github.com/CPT-KK/mc-coordinate-hud/releases) page.
 4. Place the downloaded `fabric-api-<version>.jar` and `coordinate-hud-<version>.jar` files into your `.minecraft/mods` folder.
@@ -62,7 +62,7 @@ This project uses Gradle with the Fabric Loom plugin.
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 21 or higher.
+- Java Development Kit (JDK) 25 or higher.
 
 ### Steps
 

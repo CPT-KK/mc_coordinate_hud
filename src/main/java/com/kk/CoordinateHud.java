@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -105,7 +106,7 @@ public class CoordinateHud implements ClientModInitializer {
         Holder<Biome> biomeEntry = minecraft.level.getBiome(playerBlockPos);
         String biomeName = biomeEntry.unwrapKey()
                 .map(key -> "biome." + key.identifier().getNamespace() + "." + key.identifier().getPath())
-                .filter(I18n::exists)
+                .filter(Language.getInstance()::has)
                 .map(I18n::get)
                 .filter(s -> !s.isEmpty())
                 .orElse(I18n.get("coordinate_hud.biome.unknown"));
