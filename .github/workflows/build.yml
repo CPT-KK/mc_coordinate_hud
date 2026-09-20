@@ -1,46 +1,144 @@
-# Automatically build the project and create a GitHub release when a new tag is created
-name: release
+name: Build release artifact
+run-name: Build ${{ inputs.release_tag }} release artifact
+
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing published Release tag, for example 26.2 or v1.6.0
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-build-${{ inputs.release_tag }}
+  cancel-in-progress: false
 
 jobs:
-  release:
-    name: Create Release
+  build-release:
+    name: Build and upload release artifact
     runs-on: ubuntu-24.04
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: validate gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4
-
-      - name: setup jdk
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'microsoft'
-
-      - name: make gradle wrapper executable
-        run: chmod +x ./gradlew
-
-      - name: build
-        run: ./gradlew build
-
-      - name: Get version from tag
-        id: get_version
+      - name: Validate published Release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "RELEASE_NAME=Coordinate HUD Mod v${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          set -euo pipefail
 
-      - name: Create Release and Upload Assets
-        uses: ncipollo/release-action@v1
+          release_json="$(gh release view "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json tagName,isDraft,isImmutable,publishedAt)"
+
+          actual_tag="$(jq -r '.tagName' <<< "$release_json")"
+          is_draft="$(jq -r '.isDraft' <<< "$release_json")"
+          is_immutable="$(jq -r '.isImmutable' <<< "$release_json")"
+          published_at="$(jq -r '.publishedAt // empty' <<< "$release_json")"
+
+          if [[ "$is_draft" == "true" || -z "$published_at" ]]; then
+            echo "Release '$RELEASE_TAG' has not been published." >&2
+            exit 1
+          fi
+
+          if [[ "$is_immutable" == "true" ]]; then
+            echo "Release '$RELEASE_TAG' is immutable and cannot accept new assets." >&2
+            exit 1
+          fi
+
+          echo "tag=$actual_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout Release tag
+        uses: actions/checkout@v7
         with:
-          tag: ${{ github.ref_name }}
-          name: ${{ steps.get_version.outputs.RELEASE_NAME }}
-          draft: false
-          prerelease: false
-          allowUpdates: true
-          artifacts: "./build/libs/*.jar"
+          ref: ${{ steps.release.outputs.tag }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Detect required Java version
+        id: java
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          java_version=""
+          while IFS= read -r line; do
+            if [[ "$line" =~ options\.release[[:space:]]*=[[:space:]]*([0-9]+) ]]; then
+              java_version="${BASH_REMATCH[1]}"
+              break
+            fi
+          done < build.gradle
+
+          if [[ -z "$java_version" ]]; then
+            echo "Unable to detect the Java release from build.gradle." >&2
+            exit 1
+          fi
+
+          echo "version=$java_version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ steps.java.outputs.version }}
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
+
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build --no-daemon
+
+      - name: Locate release artifact
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t artifacts < <(find build/libs -maxdepth 1 -type f \
+            -name '*.jar' \
+            ! -name '*-sources.jar' \
+            ! -name '*-dev.jar' \
+            ! -name '*-javadoc.jar' \
+            -print | sort)
+
+          if (( ${#artifacts[@]} != 1 )); then
+            echo "Expected exactly one release JAR, found ${#artifacts[@]}." >&2
+            printf '  %s\n' "${artifacts[@]:-<none>}" >&2
+            exit 1
+          fi
+
+          echo "path=${artifacts[0]}" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "${artifacts[0]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifact to Release
+        env:
+          ARTIFACT_PATH: ${{ steps.artifact.outputs.path }}
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" "$ARTIFACT_PATH" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Write job summary
+        env:
+          ARTIFACT_NAME: ${{ steps.artifact.outputs.name }}
+          JAVA_VERSION: ${{ steps.java.outputs.version }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          {
+            echo "### Release artifact uploaded"
+            echo
+            echo "- Release: \`$RELEASE_TAG\`"
+            echo "- Commit: \`$(git rev-parse HEAD)\`"
+            echo "- Java: \`$JAVA_VERSION\`"
+            echo "- Artifact: \`$ARTIFACT_NAME\`"
+          } >> "$GITHUB_STEP_SUMMARY"
